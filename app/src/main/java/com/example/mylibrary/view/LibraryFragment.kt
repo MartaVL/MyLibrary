@@ -13,7 +13,7 @@ import com.example.mylibrary.data.Book
 import com.example.mylibrary.databinding.LibraryFragmentBinding
 import com.example.mylibrary.viewmodel.LibraryViewModel
 
-class LibraryFragment() : Fragment() {
+class LibraryFragment(private val type: String) : Fragment() {
 
     private var adapter: ArrayAdapter<Book>? = null
     private var _binding: LibraryFragmentBinding? = null
@@ -27,12 +27,19 @@ class LibraryFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = LibraryFragmentBinding.inflate(inflater, container, false)
-        libraryViewModel.allBooks.observe(viewLifecycleOwner, Observer {
-            adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, it)
-            binding.listBooks.adapter = adapter
-        })
+        if(type == "ALL") {
+            libraryViewModel.allBooks.observe(viewLifecycleOwner, Observer {
+                adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, it)
+                binding.listBooks.adapter = adapter
+            })
+        } else {
+            libraryViewModel.noReadBooks.observe(viewLifecycleOwner, Observer {
+                adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, it)
+                binding.listBooks.adapter = adapter
+            })
+        }
 
-        binding.listBooks.setOnItemClickListener {parent, view, position, id ->
+        binding.listBooks.setOnItemClickListener { _, _, position, _ ->
             val dialog = BookDialog(position)
             dialog.show(childFragmentManager, "Book")
         }

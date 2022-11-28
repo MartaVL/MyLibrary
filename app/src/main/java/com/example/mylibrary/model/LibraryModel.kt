@@ -46,8 +46,6 @@ class LibraryModel {
            return null
        }
 
-
-
        //Conexión base de datos
        fun saveBook(position: Int, isRead: Boolean, isLoan: Boolean, score: Int, books: MutableList<Book>?) : MutableList<Book> {
            for(i in 0 until books!!.size) {
