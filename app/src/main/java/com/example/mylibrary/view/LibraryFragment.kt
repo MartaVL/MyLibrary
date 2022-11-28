@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.mylibrary.data.Book
@@ -18,7 +18,8 @@ class LibraryFragment() : Fragment() {
     private var adapter: ArrayAdapter<Book>? = null
     private var _binding: LibraryFragmentBinding? = null
     private val binding get() = _binding!!
-    private val libraryViewModel: LibraryViewModel by viewModels()
+
+    private val libraryViewModel: LibraryViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,13 +27,14 @@ class LibraryFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = LibraryFragmentBinding.inflate(inflater, container, false)
-        libraryViewModel.libraryModel.observe(viewLifecycleOwner, Observer {
+        libraryViewModel.allBooks.observe(viewLifecycleOwner, Observer {
             adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, it)
             binding.listBooks.adapter = adapter
         })
 
         binding.listBooks.setOnItemClickListener {parent, view, position, id ->
-            Toast.makeText(requireContext(), libraryViewModel.getData(position),   Toast.LENGTH_SHORT).show()
+            val dialog = BookDialog(position)
+            dialog.show(childFragmentManager, "Book")
         }
 
         return binding.root

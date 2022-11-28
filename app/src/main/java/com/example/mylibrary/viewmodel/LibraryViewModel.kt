@@ -6,13 +6,29 @@ import com.example.mylibrary.data.Book
 import com.example.mylibrary.model.LibraryModel
 
 class LibraryViewModel: ViewModel() {
-    val libraryModel = MutableLiveData<MutableList<Book>>()
+    val allBooks = MutableLiveData<MutableList<Book>>()
+    val noReadBooks = MutableLiveData<MutableList<Book>>()
+    val loansBooks = MutableLiveData<MutableList<Book>>()
 
     fun loadData() {
-        libraryModel.postValue(LibraryModel.loadBooks())
+        allBooks.postValue(LibraryModel.loadAllBooks())
     }
 
-    fun getData(position: Int) : String {
-        return LibraryModel.getBook(position, libraryModel.value)
+    fun loadData2() {
+        noReadBooks.postValue(LibraryModel.loadNoReadBooks(allBooks.value))
+    }
+
+    fun loadData3() {
+        loansBooks.postValue(LibraryModel.loadLoansBooks( allBooks.value))
+    }
+
+    fun getData(position: Int) : Book? {
+        return LibraryModel.getBook(position, allBooks.value)
+    }
+
+    fun saveData(position: Int, isRead: Boolean, isLoan: Boolean, score: Int) {
+        allBooks.postValue(LibraryModel.saveBook(position, isRead, isLoan, score, allBooks.value))
+        noReadBooks.postValue(LibraryModel.loadNoReadBooks(allBooks.value))
+        loansBooks.postValue(LibraryModel.loadLoansBooks( allBooks.value))
     }
 }

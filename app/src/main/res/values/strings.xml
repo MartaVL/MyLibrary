@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">MyLibrary</string>
     <string name="add_book">Add book</string>
+    <string name="positive_button">Ok</string>
+    <string name="read">Read</string>
+    <string name="loan">Loan</string>
+    <string name="genre">Genre: </string>
+    <string name="score">Score: </string>
 </resources>
