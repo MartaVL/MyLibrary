@@ -38,5 +38,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }.attach()
+
+        libraryViewModel.loadData()
     }
 }
