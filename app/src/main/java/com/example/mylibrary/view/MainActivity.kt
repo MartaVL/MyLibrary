@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.ViewModelProvider
 import com.example.mylibrary.R
 import com.example.mylibrary.databinding.ActivityMainBinding
 import com.example.mylibrary.viewmodel.LibraryViewModel
@@ -25,8 +24,8 @@ class MainActivity : AppCompatActivity() {
         val adapter = PageAdapter(this)
         binding.pager.adapter = adapter
 
-        TabLayoutMediator(binding.tabLayout, binding.pager) {tab, position->
-            when(position){
+        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
+            when (position) {
                 0 -> {
                     tab.icon = ResourcesCompat.getDrawable(resources, R.drawable.library, null)
                 }
@@ -38,7 +37,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }.attach()
+    }
 
-        libraryViewModel.loadData()
+    override fun onStart() {
+        libraryViewModel.onCreate(this)
+        super.onStart()
     }
 }

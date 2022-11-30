@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.example.mylibrary.data.Book
+import com.example.mylibrary.database.Book
 import com.example.mylibrary.databinding.LoansFragmentBinding
 import com.example.mylibrary.viewmodel.LibraryViewModel
 

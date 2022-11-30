@@ -1,30 +1,59 @@
 package com.example.mylibrary.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mylibrary.data.Book
+import androidx.lifecycle.viewModelScope
+import com.example.mylibrary.database.Book
 import com.example.mylibrary.model.LibraryModel
+import kotlinx.coroutines.launch
 
-class LibraryViewModel: ViewModel() {
+class LibraryViewModel(): ViewModel() {
+
+    private val model: LibraryModel = LibraryModel()
+
     val allBooks = MutableLiveData<MutableList<Book>>()
     val noReadBooks = MutableLiveData<MutableList<Book>>()
     val loansBooks = MutableLiveData<MutableList<Book>>()
 
-    fun loadData() {
-        var books = LibraryModel.loadAllBooks()
-        allBooks.postValue(books)
-        noReadBooks.postValue(LibraryModel.loadNoReadBooks(books))
-        loansBooks.postValue(LibraryModel.loadLoansBooks(books))
+    fun onCreate(context: Context) {
+        viewModelScope.launch {
+            model.connectDatabase(context)
+            allBooks.postValue(model.getAllBooks())
+            noReadBooks.postValue(model.getNoReadBooks())
+            loansBooks.postValue(model.getLoanBooks())
+        }
     }
 
     fun getData(position: Int) : Book? {
-        return LibraryModel.getBook(position, allBooks.value)
+        for(i in 0 until allBooks.value!!.size) {
+            if (i == position) {
+                return allBooks.value!![i]
+            }
+        }
+        return null
     }
 
     fun saveData(position: Int, isRead: Boolean, isLoan: Boolean, score: Int) {
-        var books = LibraryModel.saveBook(position, isRead, isLoan, score, allBooks.value)
-        allBooks.postValue(books)
-        noReadBooks.postValue(LibraryModel.loadNoReadBooks(books))
-        loansBooks.postValue(LibraryModel.loadLoansBooks(books))
+        viewModelScope.launch {
+            var book: Book? = null
+            for (i in 0 until allBooks.value!!.size) {
+                if (i == position) {
+                    book = allBooks.value!![i]
+                    book.read = isRead
+                    book.loan = isLoan
+                    book.score = score
+                    break
+                }
+            }
+
+            if(book != null) {
+                model.saveBook(book)
+                allBooks.postValue(model.getAllBooks())
+                noReadBooks.postValue(model.getNoReadBooks())
+                loansBooks.postValue(model.getLoanBooks())
+            }
+
+        }
     }
 }
