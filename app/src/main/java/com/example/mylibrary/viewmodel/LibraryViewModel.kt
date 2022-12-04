@@ -72,14 +72,14 @@ class LibraryViewModel(): ViewModel() {
                     model.deleteLoan(loan)
                     val book = getBook(loan.idBook)
                     book?.let {
-                        saveBook(it.id, it.read, false, it.score)
+                        saveBook(it.id, it.read, false, it.score, "")
                     }
                 }
             }
         }
     }
 
-    fun saveBook(id: Int, isRead: Boolean, isLoan: Boolean, score: Int) {
+    fun saveBook(id: Int, isRead: Boolean, isLoan: Boolean, score: Int, lentTo: String) {
         viewModelScope.launch {
             val book = getBook(id)
             book?.let {
@@ -89,7 +89,7 @@ class LibraryViewModel(): ViewModel() {
                 model.saveBook(it)
 
                 if(it.loan) {
-                    model.addLoan(Loan(it.id, "anonimo", Date(Calendar.getInstance().timeInMillis)))
+                    model.addLoan(Loan(it.id, lentTo, Date(Calendar.getInstance().timeInMillis)))
                 }
 
                 allBooks.postValue(model.getAllBooks())

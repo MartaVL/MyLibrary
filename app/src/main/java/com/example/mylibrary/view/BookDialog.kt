@@ -4,7 +4,9 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
+import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.mylibrary.R
@@ -25,19 +27,25 @@ class BookDialog(private val idBook: Int) : DialogFragment() {
 
         binding.name.text = data?.name
         binding.author.text = data?.author
-
         binding.genre.text = getString(R.string.genre).plus(" ").plus(data?.genre)
-        binding.score.text = getString(R.string.score).plus(" ").plus(data?.score).plus("/5")
 
         binding.checkLoan.isChecked = data?.loan == true
         binding.checkRead.isChecked = data?.read == true
 
+        binding.checkLoan.setOnClickListener { _ ->
+            if(binding.checkLoan.isChecked) binding.to.visibility = View.VISIBLE else binding.to.visibility = View.GONE
+        }
+
+        binding.checkRead.setOnClickListener { _ ->
+            if(binding.checkRead.isChecked) binding.score.visibility = View.VISIBLE else binding.score.visibility = View.GONE
+        }
+
         return AlertDialog.Builder(requireActivity())
             .setView(binding.root)
             .setPositiveButton(R.string.positive_button, DialogInterface.OnClickListener { _, _ ->
-                val scoreIntArray = binding.score.text.toString().split(" ")
-                val scoreInt = ((scoreIntArray[scoreIntArray.size - 1]).split("/")[0]).toInt()
-                libraryViewModel.saveBook(idBook, binding.checkRead.isChecked, binding.checkLoan.isChecked, scoreInt)
+                val score = binding.score.text.toString().toInt()
+                val lentTo = if(binding.checkLoan.isChecked) binding.to.text.toString() else ""
+                libraryViewModel.saveBook(idBook, binding.checkRead.isChecked, binding.checkLoan.isChecked, score, lentTo)
                 dialog?.cancel()
             })
             .create()
@@ -48,3 +56,4 @@ class BookDialog(private val idBook: Int) : DialogFragment() {
         _binding = null
     }
 }
+
