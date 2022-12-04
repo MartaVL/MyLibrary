@@ -1,10 +1,8 @@
 package com.example.mylibrary.model
 
-import android.app.Application
 import android.content.Context
-import com.example.mylibrary.database.Book
-import com.example.mylibrary.database.BookDao
-import com.example.mylibrary.database.LibraryDatabase
+import com.example.mylibrary.database.*
+//import com.example.mylibrary.database.LoanDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -12,11 +10,13 @@ import kotlinx.coroutines.withContext
 class LibraryModel () {
 
     private lateinit var bookDao: BookDao
+    private lateinit var loanDao: LoanDao
 
     suspend fun connectDatabase(context: Context) {
         return withContext(Dispatchers.IO) {
-            bookDao = LibraryDatabase.getInstance(context)?.bookDao()!!
-
+            var database = LibraryDatabase.getInstance(context)
+            bookDao = database?.bookDao()!!
+            loanDao = database?.loanDao()!!
         }
     }
 
@@ -32,9 +32,21 @@ class LibraryModel () {
         }
     }
 
-    suspend fun getLoanBooks() : MutableList<Book>? {
+    suspend fun getLoanBooks() : MutableList<Loan>? {
         return withContext(Dispatchers.IO) {
-            bookDao?.getLoanBooks()
+            loanDao?.getAllLoans()
+        }
+    }
+
+    suspend fun addLoan(loan: Loan) {
+        return withContext(Dispatchers.IO) {
+            loanDao?.addLoan(loan)
+        }
+    }
+
+    suspend fun deleteLoan(loan: Loan) {
+        return withContext(Dispatchers.IO) {
+            loanDao?.deleteLoan(loan)
         }
     }
 

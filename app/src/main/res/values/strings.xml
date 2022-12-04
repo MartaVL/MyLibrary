@@ -6,4 +6,8 @@
     <string name="loan">Loan</string>
     <string name="genre">Genre: </string>
     <string name="score">Score: </string>
+    <string name="date">Loan date: </string>
+    <string name="destination">Lent to: </string>
+    <string name="returnLoan">Returned</string>
+
 </resources>

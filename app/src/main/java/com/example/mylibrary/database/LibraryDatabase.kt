@@ -1,13 +1,13 @@
 package com.example.mylibrary.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 
-@Database(entities = [Book::class], version = 1)
+@Database(entities = [Book::class, Loan::class], version = 6)
+@TypeConverters(Converters:: class)
 abstract class LibraryDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
+    abstract fun loanDao(): LoanDao
 
     companion object {
         private const val DATABASE_NAME = "library"
@@ -20,7 +20,9 @@ abstract class LibraryDatabase : RoomDatabase() {
                     context.applicationContext,
                     LibraryDatabase::class.java,
                     DATABASE_NAME
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
             }
 
             return INSTANCE

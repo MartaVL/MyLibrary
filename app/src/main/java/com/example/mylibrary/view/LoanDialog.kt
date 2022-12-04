@@ -9,35 +9,33 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.mylibrary.R
 import com.example.mylibrary.databinding.BookDialogBinding
+import com.example.mylibrary.databinding.LoanDialogBinding
 import com.example.mylibrary.viewmodel.LibraryViewModel
 
-class BookDialog(private val idBook: Int) : DialogFragment() {
+class LoanDialog(private val idLoan: Int) : DialogFragment() {
 
-    private var _binding: BookDialogBinding? = null
+    private var _binding: LoanDialogBinding? = null
     private val binding get() = _binding!!
 
     private val libraryViewModel: LibraryViewModel by activityViewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
-        _binding = BookDialogBinding.inflate(LayoutInflater.from(context))
-        val data = libraryViewModel.getBook(idBook)
+        _binding = LoanDialogBinding.inflate(LayoutInflater.from(context))
+        val data = libraryViewModel.getLoan(idLoan)
 
-        binding.name.text = data?.name
-        binding.author.text = data?.author
+        binding.name.text = data?.nameBook
+        binding.destination.text = data?.contact
+        binding.date.text = data?.date.toString()
 
-        binding.genre.text = getString(R.string.genre).plus(" ").plus(data?.genre)
-        binding.score.text = getString(R.string.score).plus(" ").plus(data?.score).plus("/5")
-
-        binding.checkLoan.isChecked = data?.loan == true
-        binding.checkRead.isChecked = data?.read == true
+        binding.checkReturn.isChecked = false
 
         return AlertDialog.Builder(requireActivity())
             .setView(binding.root)
             .setPositiveButton(R.string.positive_button, DialogInterface.OnClickListener { _, _ ->
-                val scoreIntArray = binding.score.text.toString().split(" ")
-                val scoreInt = ((scoreIntArray[scoreIntArray.size - 1]).split("/")[0]).toInt()
-                libraryViewModel.saveBook(idBook, binding.checkRead.isChecked, binding.checkLoan.isChecked, scoreInt)
+                if(binding.checkReturn.isChecked) {
+                    libraryViewModel.returnLoan(idLoan)
+                }
                 dialog?.cancel()
             })
             .create()
