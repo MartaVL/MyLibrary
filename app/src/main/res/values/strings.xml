@@ -10,5 +10,6 @@
     <string name="destination">Lent to: </string>
     <string name="returnLoan">Returned</string>
     <string name="to">To</string>
-
+    <string name="errorScore">The score of the book must be between 1 and 5</string>
+    <string name="errorTo">The field cannot be empty</string>
 </resources>
